@@ -1,0 +1,532 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .doc {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: #1a1208;
+    color: #e8d9b5;
+    min-height: 100vh;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bg-texture {
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(200,160,60,0.03) 40px, rgba(200,160,60,0.03) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(200,160,60,0.03) 40px, rgba(200,160,60,0.03) 41px);
+    pointer-events: none;
+  }
+
+  .corner-ornament {
+    position: absolute;
+    width: 80px; height: 80px;
+    opacity: 0.35;
+  }
+  .corner-ornament.tl { top: 12px; left: 12px; }
+  .corner-ornament.tr { top: 12px; right: 12px; transform: scaleX(-1); }
+  .corner-ornament.bl { bottom: 12px; left: 12px; transform: scaleY(-1); }
+  .corner-ornament.br { bottom: 12px; right: 12px; transform: scale(-1); }
+
+  .outer-border {
+    margin: 16px;
+    border: 1px solid rgba(200,160,60,0.4);
+    padding: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .inner-border {
+    border: 0.5px solid rgba(200,160,60,0.2);
+    padding: 40px 48px 48px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(200,160,60,0.25);
+    position: relative;
+  }
+
+  .seal {
+    width: 80px; height: 80px;
+    margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .state-label {
+    font-family: 'Crimson Pro', serif;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: rgba(200,160,60,0.7);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .candidate-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 44px;
+    font-weight: 900;
+    color: #e8d9b5;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .candidate-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(200,160,60,0.85);
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+  }
+
+  .divider-ornament {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    margin: 16px 0;
+  }
+  .divider-line { flex: 1; height: 0.5px; background: rgba(200,160,60,0.3); }
+  .divider-diamond {
+    width: 6px; height: 6px;
+    background: rgba(200,160,60,0.6);
+    transform: rotate(45deg);
+  }
+
+  .tagline {
+    font-style: italic;
+    font-size: 17px;
+    color: rgba(232,217,181,0.75);
+    letter-spacing: 0.02em;
+  }
+
+  .intro {
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(232,217,181,0.8);
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto 44px;
+    font-style: italic;
+  }
+
+  .section {
+    margin-bottom: 40px;
+    break-inside: avoid;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 0.5px solid rgba(200,160,60,0.2);
+  }
+
+  .section-icon {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(200,160,60,0.4);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    background: rgba(200,160,60,0.07);
+    font-size: 15px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #e8d9b5;
+    letter-spacing: 0.03em;
+  }
+
+  .program-tag {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(200,160,60,0.6);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .program-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(200,160,60,0.9);
+    margin-bottom: 10px;
+  }
+
+  .program-desc {
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(232,217,181,0.75);
+    margin-bottom: 14px;
+  }
+
+  .benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 14px 0;
+  }
+
+  .benefit-col-title {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(200,160,60,0.55);
+    margin-bottom: 8px;
+  }
+
+  .benefit-item {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(232,217,181,0.65);
+    padding-left: 14px;
+    position: relative;
+    margin-bottom: 6px;
+  }
+  .benefit-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px;
+    width: 5px; height: 5px;
+    border: 0.5px solid rgba(200,160,60,0.5);
+    transform: rotate(45deg);
+  }
+
+  .benefit-box {
+    background: rgba(200,160,60,0.05);
+    border: 0.5px solid rgba(200,160,60,0.15);
+    padding: 14px 16px;
+    border-radius: 2px;
+  }
+
+  .principles {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin: 24px 0;
+  }
+
+  .principle-card {
+    border: 0.5px solid rgba(200,160,60,0.2);
+    padding: 14px 16px;
+    text-align: center;
+    background: rgba(200,160,60,0.04);
+  }
+
+  .principle-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: rgba(200,160,60,0.2);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .principle-text {
+    font-size: 13px;
+    color: rgba(232,217,181,0.7);
+    line-height: 1.4;
+  }
+
+  .footer {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(200,160,60,0.25);
+    text-align: center;
+  }
+
+  .footer-slogan {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #e8d9b5;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-sub {
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(200,160,60,0.6);
+    margin-bottom: 24px;
+  }
+
+  .footer-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    color: rgba(200,160,60,0.7);
+    text-transform: uppercase;
+  }
+</style>
+
+<div class="doc">
+  <div class="bg-texture"></div>
+
+  <svg class="corner-ornament tl" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4 L4 40 M4 4 L40 4" stroke="#c8a03c" stroke-width="1" fill="none"/>
+    <path d="M4 4 L20 20" stroke="#c8a03c" stroke-width="0.5" fill="none"/>
+    <circle cx="4" cy="4" r="3" fill="none" stroke="#c8a03c" stroke-width="0.5"/>
+    <circle cx="4" cy="4" r="1.5" fill="#c8a03c"/>
+    <path d="M14 4 L14 14 L4 14" stroke="#c8a03c" stroke-width="0.5" fill="none" opacity="0.5"/>
+  </svg>
+  <svg class="corner-ornament tr" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4 L4 40 M4 4 L40 4" stroke="#c8a03c" stroke-width="1" fill="none"/>
+    <path d="M4 4 L20 20" stroke="#c8a03c" stroke-width="0.5" fill="none"/>
+    <circle cx="4" cy="4" r="3" fill="none" stroke="#c8a03c" stroke-width="0.5"/>
+    <circle cx="4" cy="4" r="1.5" fill="#c8a03c"/>
+    <path d="M14 4 L14 14 L4 14" stroke="#c8a03c" stroke-width="0.5" fill="none" opacity="0.5"/>
+  </svg>
+  <svg class="corner-ornament bl" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4 L4 40 M4 4 L40 4" stroke="#c8a03c" stroke-width="1" fill="none"/>
+    <path d="M4 4 L20 20" stroke="#c8a03c" stroke-width="0.5" fill="none"/>
+    <circle cx="4" cy="4" r="3" fill="none" stroke="#c8a03c" stroke-width="0.5"/>
+    <circle cx="4" cy="4" r="1.5" fill="#c8a03c"/>
+    <path d="M14 4 L14 14 L4 14" stroke="#c8a03c" stroke-width="0.5" fill="none" opacity="0.5"/>
+  </svg>
+  <svg class="corner-ornament br" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4 L4 40 M4 4 L40 4" stroke="#c8a03c" stroke-width="1" fill="none"/>
+    <path d="M4 4 L20 20" stroke="#c8a03c" stroke-width="0.5" fill="none"/>
+    <circle cx="4" cy="4" r="3" fill="none" stroke="#c8a03c" stroke-width="0.5"/>
+    <circle cx="4" cy="4" r="1.5" fill="#c8a03c"/>
+    <path d="M14 4 L14 14 L4 14" stroke="#c8a03c" stroke-width="0.5" fill="none" opacity="0.5"/>
+  </svg>
+
+  <div class="outer-border">
+    <div class="inner-border">
+
+      <div class="header">
+        <div class="seal">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+            <circle cx="40" cy="40" r="36" fill="none" stroke="#c8a03c" stroke-width="0.75" opacity="0.5"/>
+            <circle cx="40" cy="40" r="30" fill="none" stroke="#c8a03c" stroke-width="0.5" opacity="0.3"/>
+            <circle cx="40" cy="40" r="22" fill="rgba(200,160,60,0.08)" stroke="#c8a03c" stroke-width="0.5" opacity="0.6"/>
+            <path d="M40 18 L43 30 L56 30 L46 37 L49 49 L40 42 L31 49 L34 37 L24 30 L37 30 Z" fill="rgba(200,160,60,0.25)" stroke="#c8a03c" stroke-width="0.75"/>
+            <text x="40" y="62" text-anchor="middle" font-family="Georgia,serif" font-size="7" fill="#c8a03c" opacity="0.6" letter-spacing="2">LEMOYNE</text>
+          </svg>
+        </div>
+
+        <div class="state-label">Estado de Lemoyne — Plano de Governo</div>
+        <div class="candidate-name">Jesper Crawley</div>
+        <div class="candidate-title">Candidato ao Governo do Estado</div>
+
+        <div class="divider-ornament">
+          <div class="divider-line"></div>
+          <div class="divider-diamond"></div>
+          <div style="font-size:10px;letter-spacing:0.3em;color:rgba(200,160,60,0.5);">◆ ◆ ◆</div>
+          <div class="divider-diamond"></div>
+          <div class="divider-line"></div>
+        </div>
+
+        <div class="tagline">"Tradição que governa, força que protege."</div>
+      </div>
+
+      <div class="intro">
+        O Estado de Lemoyne vive um momento que exige organização, firmeza e direção. Este plano representa um compromisso direto com a população — baseado em propostas reais, executáveis e alinhadas com a identidade do estado.
+      </div>
+
+      <!-- ECONOMIA -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">$</div>
+          <div>
+            <div style="font-size:10px;letter-spacing:0.3em;color:rgba(200,160,60,0.55);text-transform:uppercase;margin-bottom:2px;">Eixo I</div>
+            <div class="section-title">Desenvolvimento Econômico</div>
+          </div>
+        </div>
+
+        <div class="program-tag">Programa</div>
+        <div class="program-name">Acesso Financeiro de Lemoyne</div>
+        <div class="program-desc">
+          Diálogo direto com os bancos de Rhodes e Saint Denis para redução de taxas e incentivo ao uso do sistema bancário — ampliando o acesso da população ao crédito responsável e ao crescimento econômico do estado.
+        </div>
+        <div class="benefits">
+          <div class="benefit-box">
+            <div class="benefit-col-title">Cidadãos recebem</div>
+            <div class="benefit-item">Taxas de juros reduzidas</div>
+            <div class="benefit-item">Abertura de contas facilitada</div>
+            <div class="benefit-item">Crédito para produtores e comerciantes</div>
+          </div>
+          <div class="benefit-box">
+            <div class="benefit-col-title">Instituições recebem</div>
+            <div class="benefit-item">Mais clientes e movimentações</div>
+            <div class="benefit-item">Maior circulação de capital</div>
+            <div class="benefit-item">Selo de parceiro do desenvolvimento</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider-ornament" style="margin-bottom:32px;">
+        <div class="divider-line"></div>
+        <div style="font-size:8px;color:rgba(200,160,60,0.3);letter-spacing:4px;">✦</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- COMÉRCIO -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon" style="font-size:13px;">▲</div>
+          <div>
+            <div style="font-size:10px;letter-spacing:0.3em;color:rgba(200,160,60,0.55);text-transform:uppercase;margin-bottom:2px;">Eixo II</div>
+            <div class="section-title">Fortalecimento do Comércio</div>
+          </div>
+        </div>
+
+        <div class="program-tag">Programa</div>
+        <div class="program-name">Empresa Amiga de Lemoyne</div>
+        <div class="program-desc">
+          Parcerias voluntárias com empresas de Rhodes e Saint Denis, formando uma rede oficial de comércio integrada ao estado — com compromisso com tabelas de preço mínimo para um mercado mais estável e previsível.
+        </div>
+        <div class="benefits">
+          <div class="benefit-box">
+            <div class="benefit-col-title">Empresas participantes ganham</div>
+            <div class="benefit-item">Prioridade em contratos estaduais</div>
+            <div class="benefit-item">Reconhecimento como empresa estratégica</div>
+            <div class="benefit-item">Selo oficial "Empresa Amiga de Lemoyne"</div>
+          </div>
+          <div class="benefit-box" style="display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;">
+              <div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:rgba(200,160,60,0.6);letter-spacing:0.1em;margin-bottom:6px;">ADESÃO VOLUNTÁRIA</div>
+              <div style="font-size:13px;color:rgba(232,217,181,0.5);line-height:1.6;">Empresas não participantes continuam operando normalmente, sem os benefícios do programa.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider-ornament" style="margin-bottom:32px;">
+        <div class="divider-line"></div>
+        <div style="font-size:8px;color:rgba(200,160,60,0.3);letter-spacing:4px;">✦</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- CAMPO -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon" style="font-size:13px;">⌖</div>
+          <div>
+            <div style="font-size:10px;letter-spacing:0.3em;color:rgba(200,160,60,0.55);text-transform:uppercase;margin-bottom:2px;">Eixo III</div>
+            <div class="section-title">Valorização do Homem do Campo</div>
+          </div>
+        </div>
+
+        <div class="program-tag">Programa</div>
+        <div class="program-name">Carteira do Caçador de Lemoyne</div>
+        <div class="program-desc">
+          Registro oficial para cidadãos de Lemoyne que atuam na caça como fonte de sustento — valorizando aqueles que vivem da terra, das rotas e das regiões afastadas.
+        </div>
+        <div class="benefit-box" style="border-color:rgba(200,160,60,0.25);background:rgba(200,160,60,0.06);">
+          <div class="benefit-col-title" style="margin-bottom:10px;">Direitos do caçador registrado</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <div class="benefit-item">Retirada gratuita semanal de até 50 munições à sua escolha</div>
+            <div class="benefit-item">Armaria de Rhodes como ponto oficial de apoio</div>
+            <div class="benefit-item">Reconhecimento como fornecedor de recursos do estado</div>
+            <div class="benefit-item">Maior estabilidade, segurança e apoio às atividades</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider-ornament" style="margin-bottom:32px;">
+        <div class="divider-line"></div>
+        <div style="font-size:8px;color:rgba(200,160,60,0.3);letter-spacing:4px;">✦</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- SEGURANÇA -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon" style="font-size:13px;">⊕</div>
+          <div>
+            <div style="font-size:10px;letter-spacing:0.3em;color:rgba(200,160,60,0.55);text-transform:uppercase;margin-bottom:2px;">Eixo IV</div>
+            <div class="section-title">Segurança e Saúde</div>
+          </div>
+        </div>
+
+        <div class="program-tag">Iniciativa</div>
+        <div class="program-name">Integração de Serviços Essenciais</div>
+        <div class="program-desc">
+          Diálogo direto com a Cavalaria e o Hospital para ampliar a presença e eficiência dos serviços essenciais em todo o estado — sem interferir em sua autonomia institucional.
+        </div>
+        <div class="benefits">
+          <div class="benefit-box">
+            <div class="benefit-col-title">Segurança</div>
+            <div class="benefit-item">Reforço no patrulhamento de cidades e regiões afastadas</div>
+            <div class="benefit-item">Presença mais ativa em Rhodes e Saint Denis</div>
+          </div>
+          <div class="benefit-box">
+            <div class="benefit-col-title">Saúde</div>
+            <div class="benefit-item">Ampliação da cobertura médica</div>
+            <div class="benefit-item">Menor tempo de resposta em atendimentos</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider-ornament" style="margin:32px 0;">
+        <div class="divider-line"></div>
+        <div class="divider-diamond"></div>
+        <div style="font-size:10px;letter-spacing:0.3em;color:rgba(200,160,60,0.5);">◆ ◆ ◆</div>
+        <div class="divider-diamond"></div>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- PRINCÍPIOS -->
+      <div class="section">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div class="state-label">Posicionamento de Governo</div>
+        </div>
+        <div class="principles">
+          <div class="principle-card">
+            <div class="principle-num">I</div>
+            <div class="principle-text">Respeito às instituições</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-num">II</div>
+            <div class="principle-text">Valorização do cidadão trabalhador</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-num">III</div>
+            <div class="principle-text">Crescimento econômico estruturado</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-num">IV</div>
+            <div class="principle-text">Segurança e presença do estado</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-num">V</div>
+            <div class="principle-text">Ordem acima do improviso</div>
+          </div>
+          <div class="principle-card" style="background:rgba(200,160,60,0.08);border-color:rgba(200,160,60,0.3);">
+            <div style="font-family:'Playfair Display',serif;font-size:11px;font-weight:700;color:rgba(200,160,60,0.6);letter-spacing:0.1em;margin-top:8px;">LEMOYNE</div>
+            <div style="font-size:11px;font-style:italic;color:rgba(232,217,181,0.45);margin-top:4px;">Um governo que age.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RODAPÉ -->
+      <div class="footer">
+        <div class="footer-slogan">Lemoyne precisa de direção,</div>
+        <div class="footer-slogan" style="font-style:italic;font-weight:400;font-size:18px;">não de promessas vazias.</div>
+        <div class="footer-sub" style="margin-top:14px;">Um governo que entende seu povo. Um governo que age. Um governo que protege.</div>
+
+        <div class="divider-ornament" style="margin:20px 0;">
+          <div class="divider-line"></div>
+          <div class="divider-diamond"></div>
+          <div class="divider-line"></div>
+        </div>
+
+        <div class="footer-name">Jesper Crawley — Governo de Lemoyne</div>
+        <div style="font-size:11px;letter-spacing:0.25em;color:rgba(200,160,60,0.35);margin-top:8px;font-family:'Crimson Pro',serif;font-style:italic;">Tradição que governa · Força que protege</div>
+      </div>
+
+    </div>
+  </div>
+</div>
